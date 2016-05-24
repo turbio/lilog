@@ -49,17 +49,22 @@ var request_map = {
 				element.style.transform = 'translate('
 					+ to_pos[0] + 'px ,'
 					+ to_pos[1] + 'px)';
-			}, 10);
+			}, 1);
 		});
 
-		element.addEventListener('transitionend', function(){
-			if(created_request.direction == 'to'){
-				created_request.direction = 'from';
-				element.style.transform = 'translate('
-					+ from_pos[0] + 'px ,'
-					+ from_pos[1] + 'px)';
-			}else{
-				element.parentElement.removeChild(element);
+		element.addEventListener('transitionend', function(event){
+			if(event.propertyName == 'transform'){
+				if(created_request.direction == 'to'){
+					created_request.direction = 'from';
+					element.style.transform = 'translate('
+						+ from_pos[0] + 'px ,'
+						+ from_pos[1] + 'px)';
+					var elem_size = Math.max(Math.sqrt(request.size) / 50, 10);
+					element.style.height = elem_size + 'px';
+					element.style.width = elem_size + 'px';
+				}else{
+					element.parentElement.removeChild(element);
+				}
 			}
 		});
 
@@ -144,7 +149,7 @@ function timeline_update(){
 
 	log_entries.forEach(function(request){
 		var seconds_diff = (Date.now() - request.time) / 1000;
-		var lineX = timeline.width - (seconds_diff * 2);
+		var lineX = timeline.width - (seconds_diff * 4);
 
 		timeline_ctx.moveTo(lineX, 0);
 		timeline_ctx.lineTo(lineX, timeline.height);

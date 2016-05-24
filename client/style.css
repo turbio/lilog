@@ -1,6 +1,8 @@
 body{
+	font-family: monospace;
 	margin: 0;
 	padding: 0;
+	overflow: hidden;
 	background: #607D8B;
 }
 
@@ -13,6 +15,7 @@ body{
 	background-color: #263238;
 	overflow: hidden;
 	box-shadow: 0 0 10px black;
+	z-index: 3;
 }
 #timeline-controls{
 	position: absolute;
@@ -31,27 +34,72 @@ body{
 	position: absolute;
 	left: 0;
 	top: 0;
-	bottom: 10%;
+	bottom: 15%;
 
 	width: 33%;
 	min-width: 200px;
 
+	overflow: auto;
+
 	background: #455A64;
 
 	box-shadow: 0 0 10px black;
+	direction: rtl;
+}
+#clients-list > div{
+	position: relative;
+	color: #fff;
+	text-align: right;
+	background: #607D8B;
+	margin: .5em .5em .5em 0;
+	padding: .25em .5em;
+	font-weight: bold;
+	border-radius: 0 .5em .5em 0;
+	z-index: 2;
+}
+#resources-list > div{
+	position: relative;
+	color: #fff;
+	background: #607D8B;
+	margin: .5em 0 .5em .5em;
+	padding: .25em .5em;
+	font-weight: bold;
+	border-radius: .5em 0 0 .5em;
+	z-index: 2;
 }
 #resources-list{
 	position: absolute;
 	right: 0;
 	top: 0;
-	bottom: 10%;
+	bottom: 15%;
 
 	width: 33%;
 	min-width: 200px;
 
 	background: #455A64;
 	box-shadow: 0 0 10px black;
+
+	overflow: auto;
 }
+/*#resources-list > div:before{*/
+	/*content: '';*/
+	/*background: #607D8B;*/
+	/*display: block;*/
+	/*position: absolute;*/
+	/*top: .5em;*/
+	/*bottom: .5em;*/
+	/*left: -.25em;*/
+	/*width: .5em;*/
+/*}*/
+/*#clients-list > div:before{*/
+	/*content: '';*/
+	/*display: block;*/
+	/*background: red;*/
+	/*width: .5em;*/
+	/*height: .5em;*/
+	/*position: absolute;*/
+	/*top: 0;*/
+/*}*/
 .message{
 	position: absolute;
 	width: 10px;
@@ -60,5 +108,7 @@ body{
 	background: red;
 
 	transform: translate(0, 0);
-	transition: transform 2s;
+	transition: transform 2s, width .25s, height .25s;
+
+	z-index: 1;
 }

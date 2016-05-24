@@ -48,7 +48,10 @@ if(args.formats){
 		}
 
 		data.split('\n').forEach(function(line){
-			log.push(logparser.parse(line));
+			var new_request = logparser.parse(line);
+			if(new_request){
+				log.push(new_request);
+			}
 		});
 
 		console.log('done');

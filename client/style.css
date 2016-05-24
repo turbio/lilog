@@ -9,14 +9,18 @@ body{
 	right: 0;
 	height: 100px;
 	background-color: #263238;
-	overflow-x: scroll;
-	overflow-y: hidden;
+	overflow: hidden;
 }
-
+#timeline-controls{
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 30px;
+	background: rgba(0, 0, 0, .5);
+}
 #timeline{
 	position: absolute;
 	right: 0;
-	top: 0;
-	bottom: 0;
-	height: 100%;
+	top: 30px;
 }

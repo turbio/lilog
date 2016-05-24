@@ -71,7 +71,9 @@ function startServer(){
 	});
 
 	io.on('connection', function(socket){
-		socket.emit('past', log);
+		//when a client connects, send the 100 most recent requests in order to
+		//populate the timeline
+		socket.emit('past', log.slice(-100));
 	});
 
 	console.log('server up on port ' + server_port);

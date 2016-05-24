@@ -28,17 +28,40 @@ var request_map = {
 	new_request: function(from, to, request){
 		var element = document.createElement('div');
 		element.classList.add('message');
+
+		var from_pos = elementPos(from.element);
+		var to_pos = elementPos(to.element);
+
 		element.style.transform = 'translate('
-			+ from.element.offsetLeft
-			+ 'px ,'
-			+ from.element.offsetTop + 'px)';
+			+ from_pos[0] + 'px ,'
+			+ from_pos[1] + 'px)';
 
 		var created_request = {
 			data: request,
 			from: from,
 			to: to,
+			direction: 'to',
 			element: element
 		};
+
+		element.addEventListener('DOMNodeInserted', function(){
+			window.setTimeout(function(){
+				element.style.transform = 'translate('
+					+ to_pos[0] + 'px ,'
+					+ to_pos[1] + 'px)';
+			}, 10);
+		});
+
+		element.addEventListener('transitionend', function(){
+			if(created_request.direction == 'to'){
+				created_request.direction = 'from';
+				element.style.transform = 'translate('
+					+ from_pos[0] + 'px ,'
+					+ from_pos[1] + 'px)';
+			}else{
+				element.parentElement.removeChild(element);
+			}
+		});
 
 		document.body.appendChild(element);
 		this.requests.push(created_request);
@@ -142,4 +165,13 @@ function timeline_update(){
 	}
 
 	timeline_ctx.closePath()
+}
+
+function elementPos(element){
+	if(element){
+		var p = elementPos(element.parentElement);
+		return [p[0] + element.offsetLeft, p[1] + element.offsetTop];
+	}else{
+		return [0, 0]
+	}
 }

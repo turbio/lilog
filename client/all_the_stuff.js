@@ -1,13 +1,15 @@
 var timeline = null;
 var timeline_ctx = null;
 var timeline_update_interval = 500;
+var clients = null;
+var servers = null;
 
 var log_entries = [];
 
 window.onload = function(){
 	var socket = io.connect('http://' + window.location.host);
 	socket.on('new', function(data){
-		console.log(data);
+		new_request(data);
 		log_entries.push(data);
 		timeline_update();
 	});
@@ -16,6 +18,9 @@ window.onload = function(){
 		timeline_update();
 	});
 
+	clients = document.getElementById('clients-list');
+	servers = document.getElementById('resources-list');
+
 	timeline = document.getElementById('timeline');
 	timeline.width = timeline.parentElement.offsetWidth;
 	timeline.height = timeline.parentElement.offsetHeight - 30;
@@ -23,6 +28,24 @@ window.onload = function(){
 
 	window.setInterval(timeline_update, timeline_update_interval);
 };
+
+function new_request(request){
+	if(!Array.from(clients.children).find(function(c){
+		return request.from == c.innerHTML;
+	})){
+		var new_client = document.createElement('div');
+		new_client.innerHTML = request.from;
+		clients.appendChild(new_client);
+	}
+
+	if(!Array.from(servers.children).find(function(c){
+		return request.path == c.innerHTML;
+	})){
+		var new_server = document.createElement('div');
+		new_server.innerHTML = request.path;
+		servers.appendChild(new_server);
+	}
+}
 
 function timeline_update(){
 	timeline_ctx.clearRect(0, 0, timeline.width, timeline.height);

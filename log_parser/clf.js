@@ -1,7 +1,7 @@
 module.exports.name = 'clf';
 
 module.exports.parse = function(str){
-	var parse_line = /([\d\.:a-zA-z]+) (.+?) (.+?) \[(.+?)\] "(\w+) (.+?) (.+?)" (\d{3}) (\d+)/g
+	var parse_line = /([\d\.:a-zA-z]+) ([^ ]+) ([^ ]+?) \[([^\]]+)\] "([^ ]+) ([^ ]+) ([^ ]+)" (\d{3}) (\d+)/g
 
 	var parse_date = /^(\d+)\/(\w+)\/(\d+):(\d{2}:\d{2}:\d{2}) (.+)$/g;
 	var format_date = '$1 $2 $3 $4 GMT$5';

@@ -1,15 +1,97 @@
 var timeline = null;
 var timeline_ctx = null;
-var timeline_update_interval = 500;
+//var timeline_update_interval = 500;
+var timeline_update_interval = 50000;
 var clients = null;
 var servers = null;
 
 var log_entries = [];
 
+var request_map = {
+	new: function(request){
+		var request_client = this.has_client(request);
+		if(request_client){
+			request_client.count++;
+		}else{
+			request_client = this.new_client(request);
+		}
+
+		var request_server = this.has_server(request);
+		if(request_server){
+			request_server.clount++;
+		}else{
+			request_server = this.new_server(request);
+		}
+
+		this.new_request(request_client, request_server, request);
+	},
+	new_request: function(from, to, request){
+		var element = document.createElement('div');
+		element.classList.add('message');
+		element.style.transform = 'translate('
+			+ from.element.offsetLeft
+			+ 'px ,'
+			+ from.element.offsetTop + 'px)';
+
+		var created_request = {
+			data: request,
+			from: from,
+			to: to,
+			element: element
+		};
+
+		document.body.appendChild(element);
+		this.requests.push(created_request);
+		return created_request;
+	},
+	new_client: function(request){
+		var element = document.createElement('div');
+		element.innerHTML = request.from;
+
+		var created_client = {
+			count: 1,
+			name: request.from,
+			element: element
+		};
+
+		clients.appendChild(element);
+
+		this.clients.push(created_client);
+		return created_client;
+	},
+	new_server: function(request){
+		var element = document.createElement('div');
+		element.innerHTML = request.path;
+
+		var created_server = {
+			count: 1,
+			name: request.path,
+			element: element
+		};
+
+		servers.appendChild(element);
+		this.servers.push(created_server);
+		return created_server;
+	},
+	has_client: function(request){
+		return this.clients.find(function(c){
+			return request.from == c.name;
+		});
+	},
+	has_server: function(request){
+		return this.servers.find(function(s){
+			return request.path == s.name;
+		});
+	},
+	clients: [],
+	servers: [],
+	requests: [],
+};
+
 window.onload = function(){
 	var socket = io.connect('http://' + window.location.host);
 	socket.on('new', function(data){
-		new_request(data);
+		request_map.new(data);
 		log_entries.push(data);
 		timeline_update();
 	});
@@ -28,24 +110,6 @@ window.onload = function(){
 
 	window.setInterval(timeline_update, timeline_update_interval);
 };
-
-function new_request(request){
-	if(!Array.from(clients.children).find(function(c){
-		return request.from == c.innerHTML;
-	})){
-		var new_client = document.createElement('div');
-		new_client.innerHTML = request.from;
-		clients.appendChild(new_client);
-	}
-
-	if(!Array.from(servers.children).find(function(c){
-		return request.path == c.innerHTML;
-	})){
-		var new_server = document.createElement('div');
-		new_server.innerHTML = request.path;
-		servers.appendChild(new_server);
-	}
-}
 
 function timeline_update(){
 	timeline_ctx.clearRect(0, 0, timeline.width, timeline.height);

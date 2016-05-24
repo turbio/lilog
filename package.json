@@ -6,7 +6,8 @@
   "dependencies": {
     "express": "^4.13.4",
     "minimist": "^1.2.0",
-    "socket.io": "^1.4.6"
+    "socket.io": "^1.4.6",
+    "tail": "^1.1.0"
   },
   "devDependencies": {},
   "scripts": {

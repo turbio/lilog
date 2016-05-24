@@ -15,6 +15,6 @@ module.exports.parse = function(str){
 			proto: parts[7],
 		};
 	}else{
-		console.log('error parsing log entry "' + str + '"');
+		console.log("error parsing log entry '" + str + "'");
 	}
 };

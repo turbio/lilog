@@ -2,6 +2,8 @@ var express = require('express');
 var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
+var fs = require('fs');
+var tail = require('tail').Tail;
 
 var args = require('minimist')(process.argv.slice(2));
 
@@ -13,6 +15,15 @@ require("fs").readdirSync(parser_path).forEach(function(file){
 });
 
 var logparser = null;
+var file = null;
+
+var log = [];
+
+var logpath = (args._[0] || args.path);
+
+if(!logpath){
+	help('must supply a log file path');
+}
 
 if(args.formats){
 	supported_parsers.forEach(function(p){
@@ -27,32 +38,54 @@ if(args.formats){
 	if(!logparser){
 		help('no parser for format "' + (args.format || args.f || 'clf') + '"');
 	}
-
 	console.log('using log format ' + logparser.name);
 
-	startServer();
-}
+	console.log('reading and parsing log file...');
+	fs.readFile(logpath, 'utf-8', function(err, data){
+		if(err){
+			console.log(err);
+			process.exit(-2);
+		}
 
-function startServer(){
-	server.listen(args.port || args.p || 3000);
-
-	app.use(express.static('client'));
-
-	io.on('connection', function (socket) {
-		socket.emit('request', {
-			test: 'test'
+		data.split('\n').forEach(function(line){
+			log.push(logparser.parse(line));
 		});
+
+		console.log('done');
+
+		file = new tail(logpath);
+		startServer();
 	});
 }
 
+function startServer(){
+	var server_port = (args.port || args.p || 3000)
+	server.listen(server_port);
 
+	app.use(express.static('client'));
+
+	file.on('line', function(data){
+		var new_entry = logparser.parse(data);
+		log.push(new_entry);
+		io.emit('new', new_entry);
+	});
+
+	io.on('connection', function(socket){
+		socket.emit('past', log);
+	});
+
+	console.log('server up on port ' + server_port);
+}
 
 function help(err){
 	if(err){
 		console.log(err);
 	}
-	console.log('usage: [OPTIONS] [LOGFILE] ');
+	console.log('usage: [OPTIONS] <logfile> ');
 	console.log('--formats\tlist all supported log formats');
 	console.log('--format -f\tlog format (default: clf)');
 	console.log('--port -p\thttp port (default: 3000)');
+	if(err){
+		process.exit(-1);
+	}
 }

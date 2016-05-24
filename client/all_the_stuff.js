@@ -29,8 +29,9 @@ var request_map = {
 		var element = document.createElement('div');
 		element.classList.add('message');
 
-		var from_pos = elementPos(from.element);
-		var to_pos = elementPos(to.element);
+		var from_pos = elementDim(from.element);
+		from_pos[0] += (from_pos[2] - 10);
+		var to_pos = elementDim(to.element);
 
 		element.style.transform = 'translate('
 			+ from_pos[0] + 'px ,'
@@ -172,11 +173,16 @@ function timeline_update(){
 	timeline_ctx.closePath()
 }
 
-function elementPos(element){
+function elementDim(element){
 	if(element){
-		var p = elementPos(element.parentElement);
-		return [p[0] + element.offsetLeft, p[1] + element.offsetTop];
+		var p = elementDim(element.parentElement);
+		return [
+			p[0] + element.offsetLeft,
+			p[1] + element.offsetTop,
+			element.offsetWidth,
+			element.offsetHeight
+		];
 	}else{
-		return [0, 0]
+		return [0, 0, 0, 0]
 	}
 }

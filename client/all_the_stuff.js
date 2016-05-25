@@ -86,6 +86,8 @@ request.prototype.reachedDestination = function(){
 	}
 };
 request.prototype.remove = function(){
+	this.to.removeRequest(this);
+	this.from.removeRequest(this);
 	this.element.parentElement.removeChild(this.element);
 
 	var location = requests.indexOf(this);
@@ -111,6 +113,9 @@ server.prototype.addRequest = function(request){
 };
 server.prototype.removeRequest = function(request){
 	this.requests.splice(this.requests.indexOf(request), 1);
+	if(this.requests.length == 0 ){
+		this.remove();
+	}
 };
 server.prototype.createElement = function(){
 	var element = document.createElement('div');
@@ -147,6 +152,10 @@ client.prototype.addRequest = function(request){
 };
 client.prototype.removeRequest = function(request){
 	this.requests.splice(this.requests.indexOf(request), 1);
+
+	if(this.requests.length == 0 ){
+		this.remove();
+	}
 };
 client.prototype.createElement = function(){
 	var element = document.createElement('div');

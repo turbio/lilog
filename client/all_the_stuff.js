@@ -29,6 +29,9 @@ servers.remove = function(server){
 }
 
 function request(from, to){
+	to.addRequest(this);
+	from.addRequest(this);
+
 	this.from = from;
 	this.to = to;
 	this.direction = 'to';
@@ -98,10 +101,17 @@ function server(name){
 
 	this.name = name;
 	this.count = 1;
+	this.requests = [];
 	this.element = this.createElement();
 
 	servers.push(this);
 }
+server.prototype.addRequest = function(request){
+	this.requests.push(request);
+};
+server.prototype.removeRequest = function(request){
+	this.requests.splice(this.requests.indexOf(request), 1);
+};
 server.prototype.createElement = function(){
 	var element = document.createElement('div');
 	element.innerHTML = this.name;
@@ -127,10 +137,17 @@ function client(name){
 
 	this.name = name;
 	this.count = 1;
+	this.requests = [];
 	this.element = this.createElement();
 
 	clients.push(this);
 }
+client.prototype.addRequest = function(request){
+	this.requests.push(request);
+};
+client.prototype.removeRequest = function(request){
+	this.requests.splice(this.requests.indexOf(request), 1);
+};
 client.prototype.createElement = function(){
 	var element = document.createElement('div');
 	element.innerHTML = this.name;
@@ -150,7 +167,9 @@ client.prototype.requested = function(){
 window.onload = function(){
 	var socket = io.connect('http://' + window.location.host);
 	socket.on('new', function(data){
-		new request(new client(data.from), new server(data.path));
+		var new_server = new server(data.path);
+		var new_client = new client(data.from);
+		var new_request = new request(new_client, new_server);
 		log_entries.push(data);
 		timeline_update();
 	});

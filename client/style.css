@@ -6,7 +6,7 @@ body{
 	background: #607D8B;
 }
 
-#timeline-container{
+#timeline{
 	position: absolute;
 	bottom: 0;
 	left: 0;
@@ -25,43 +25,24 @@ body{
 	height: 25px;
 	background: rgba(0, 0, 0, .5);
 }
-#timeline{
+.list{
 	position: absolute;
-	right: 0;
-	top: 10%;
-}
-#clients-list{
-	position: absolute;
-	left: 0;
 	top: 0;
 	bottom: 15%;
-
 	width: 33%;
 	min-width: 200px;
-
-	overflow: auto;
-
 	background: #455A64;
-
 	box-shadow: 0 0 10px black;
+	overflow: auto;
+}
+#clients{
+	left: 0;
 	direction: rtl;
 }
-#clients-list > div{
-	position: relative;
-	color: #fff;
-	text-align: right;
-	background: #607D8B;
-	margin: .5em .5em .5em 0;
-	padding: .25em .5em;
-	font-weight: bold;
-	border-radius: 0 .25em .25em 0;
-	overflow: hidden;
-	height: 1.25em;
-	transition: height 2s, margin 2s, padding 2s;
-
-	z-index: 2;
+#servers{
+	right: 0;
 }
-#resources-list > div{
+.list > div{
 	position: relative;
 	color: #fff;
 	background: #607D8B;
@@ -70,41 +51,9 @@ body{
 	font-weight: bold;
 	border-radius: .25em 0 0 .25em;
 	height: 1.25em;
+	transition: height 2s, margin 2s, padding 2s;
 	z-index: 2;
 }
-#resources-list{
-	position: absolute;
-	right: 0;
-	top: 0;
-	bottom: 15%;
-
-	width: 33%;
-	min-width: 200px;
-
-	background: #455A64;
-	box-shadow: 0 0 10px black;
-
-	overflow: auto;
-}
-/*#resources-list > div:before{*/
-	/*content: '';*/
-	/*background: #607D8B;*/
-	/*display: block;*/
-	/*position: absolute;*/
-	/*top: .5em;*/
-	/*bottom: .5em;*/
-	/*left: -.25em;*/
-	/*width: .5em;*/
-/*}*/
-/*#clients-list > div:before{*/
-	/*content: '';*/
-	/*display: block;*/
-	/*background: red;*/
-	/*width: .5em;*/
-	/*height: .5em;*/
-	/*position: absolute;*/
-	/*top: 0;*/
-/*}*/
 .request{
 	position: absolute;
 	width: 10px;

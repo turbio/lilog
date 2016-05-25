@@ -2,125 +2,141 @@ var timeline = null;
 var timeline_ctx = null;
 //var timeline_update_interval = 500;
 var timeline_update_interval = 50000;
-var clients = null;
-var servers = null;
+var clients_panel = null;
+var servers_panel = null;
 
 var log_entries = [];
+var requests = [];
 
-var request_map = {
-	new: function(request){
-		var request_client = this.has_client(request);
-		if(request_client){
-			request_client.count++;
-		}else{
-			request_client = this.new_client(request);
-		}
+var clients = [];
+var servers = [];
 
-		var request_server = this.has_server(request);
-		if(request_server){
-			request_server.clount++;
-		}else{
-			request_server = this.new_server(request);
-		}
+clients.find = function(name){
+	return Array.from(this).find(function(c){
+		return name == c.name;
+	});
+}
+servers.find = function(name){
+	return Array.from(this).find(function(c){
+		return name == c.name;
+	});
+}
 
-		this.new_request(request_client, request_server, request);
-	},
-	new_request: function(from, to, request){
-		var element = document.createElement('div');
-		element.classList.add('message');
+function request(from, to){
+	this.from = from;
+	this.to = to;
+	this.direction = 'to';
+	this.element = this.createElement();
+}
+request.prototype.createElement = function(){
+	var element = document.createElement('div');
+	element.classList.add('request');
 
-		var from_pos = elementDim(from.element);
-		from_pos[0] += (from_pos[2] - 10);
-		var to_pos = elementDim(to.element);
+	var from_dim = elementDim(this.from.element);
+	from_dim[0] += (from_dim[2] - 10);
 
-		element.style.transform = 'translate('
-			+ from_pos[0] + 'px ,'
-			+ from_pos[1] + 'px)';
+	var to_dim = elementDim(this.to.element);
 
-		var created_request = {
-			data: request,
-			from: from,
-			to: to,
-			direction: 'to',
-			element: element
-		};
+	element.style.transform = 'translate('
+		+ from_dim[0] + 'px ,'
+		+ from_dim[1] + 'px)';
 
-		element.addEventListener('DOMNodeInserted', function(){
-			window.setTimeout(function(){
-				element.style.transform = 'translate('
-					+ to_pos[0] + 'px ,'
-					+ to_pos[1] + 'px)';
-			}, 1);
-		});
+	element.addEventListener('DOMNodeInserted', function(){
+		window.setTimeout(function(){
+			element.style.transform = 'translate('
+				+ to_dim[0] + 'px ,'
+				+ to_dim[1] + 'px)';
+		}, 1);
+	});
 
-		element.addEventListener('transitionend', function(event){
-			if(event.propertyName == 'transform'){
-				if(created_request.direction == 'to'){
-					created_request.direction = 'from';
-					element.style.transform = 'translate('
-						+ from_pos[0] + 'px ,'
-						+ from_pos[1] + 'px)';
-					var elem_size = Math.max(Math.sqrt(request.size) / 50, 10);
-					element.style.height = elem_size + 'px';
-					element.style.width = elem_size + 'px';
-				}else{
-					element.parentElement.removeChild(element);
-				}
-			}
-		});
+	var self = this;
+	element.addEventListener('transitionend', function(event){
+	if(event.propertyName == 'transform'){
+		self.reachedDestination();
+	}
+	});
 
-		document.body.appendChild(element);
-		this.requests.push(created_request);
-		return created_request;
-	},
-	new_client: function(request){
-		var element = document.createElement('div');
-		element.innerHTML = request.from;
+	document.body.appendChild(element);
+	return element;
 
-		var created_client = {
-			count: 1,
-			name: request.from,
-			element: element
-		};
+	requests.push(this);
+};
+request.prototype.direction = 'to';
+request.prototype.reachedDestination = function(){
+	if(this.direction == 'to'){
+		this.direction = 'from';
 
-		clients.appendChild(element);
+		var dest_pos = elementDim(this.from.element);
+		dest_pos[0] += dest_pos[2] - 10;
 
-		this.clients.push(created_client);
-		return created_client;
-	},
-	new_server: function(request){
-		var element = document.createElement('div');
-		element.innerHTML = request.path;
+		this.element.style.transform = 'translate('
+			+ dest_pos[0] + 'px ,'
+			+ dest_pos[1] + 'px)';
+	}else{
+		this.remove();
+	}
+};
+request.prototype.remove = function(){
+	this.element.parentElement.removeChild(this.element);
 
-		var created_server = {
-			count: 1,
-			name: request.path,
-			element: element
-		};
+	var location = requests.indexOf(this);
+	requests.splice(location);
+};
 
-		servers.appendChild(element);
-		this.servers.push(created_server);
-		return created_server;
-	},
-	has_client: function(request){
-		return this.clients.find(function(c){
-			return request.from == c.name;
-		});
-	},
-	has_server: function(request){
-		return this.servers.find(function(s){
-			return request.path == s.name;
-		});
-	},
-	clients: [],
-	servers: [],
-	requests: [],
+function server(name){
+	var existing_server = servers.find(name);
+	if(existing_server){
+		existing_server.requested();
+		return existing_server;
+	}
+
+	this.name = name;
+	this.count = 1;
+	this.element = this.createElement();
+
+	servers.push(this);
+}
+server.prototype.createElement = function(){
+	var element = document.createElement('div');
+	element.innerHTML = this.name;
+
+	servers_panel.appendChild(element);
+
+	return element;
+};
+server.prototype.requested = function(){
+	this.count++;
+};
+
+function client(name){
+	var existing_client = clients.find(name);
+	if(existing_client){
+		existing_client.requested();
+		return existing_client;
+	}
+
+	this.name = name;
+	this.count = 1;
+	this.element = this.createElement();
+
+	clients.push(this);
+}
+client.prototype.createElement = function(){
+	var element = document.createElement('div');
+	element.innerHTML = this.name;
+
+	clients_panel.appendChild(element);
+
+	return element;
+};
+client.prototype.requested = function(){
+	this.count++;
 };
 
 window.onload = function(){
 	var socket = io.connect('http://' + window.location.host);
 	socket.on('new', function(data){
-		request_map.new(data);
+		new request(new client(data.from), new server(data.path));
 		log_entries.push(data);
 		timeline_update();
 	});
@@ -129,8 +145,8 @@ window.onload = function(){
 		timeline_update();
 	});
 
-	clients = document.getElementById('clients-list');
-	servers = document.getElementById('resources-list');
+	clients_panel = document.getElementById('clients-list');
+	servers_panel = document.getElementById('resources-list');
 
 	timeline = document.getElementById('timeline');
 	timeline.width = timeline.parentElement.offsetWidth;

@@ -9,17 +9,23 @@ var log_entries = [];
 var requests = [];
 
 var clients = [];
-var servers = [];
-
 clients.find = function(name){
 	return Array.from(this).find(function(c){
 		return name == c.name;
 	});
 }
+clients.remove = function(client){
+	this.splice(this.indexOf(client), 1);
+}
+
+var servers = [];
 servers.find = function(name){
 	return Array.from(this).find(function(c){
 		return name == c.name;
 	});
+}
+servers.remove = function(server){
+	this.splice(this.indexOf(server), 1);
 }
 
 function request(from, to){
@@ -104,6 +110,10 @@ server.prototype.createElement = function(){
 
 	return element;
 };
+server.prototype.remove = function(){
+	this.element.parentElement.removeChild(this.element);
+	servers.remove(this);
+}
 server.prototype.requested = function(){
 	this.count++;
 };
@@ -129,6 +139,10 @@ client.prototype.createElement = function(){
 
 	return element;
 };
+client.prototype.remove = function(){
+	this.element.parentElement.removeChild(this.element);
+	clients.remove(this);
+}
 client.prototype.requested = function(){
 	this.count++;
 };

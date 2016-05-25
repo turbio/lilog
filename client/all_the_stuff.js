@@ -2,6 +2,7 @@ var timeline = null;
 var timeline_ctx = null;
 //var timeline_update_interval = 500;
 var timeline_update_interval = 50000;
+var request_over_wait = 2000;
 var clients_panel = null;
 var servers_panel = null;
 
@@ -60,9 +61,9 @@ request.prototype.createElement = function(){
 
 	var self = this;
 	element.addEventListener('transitionend', function(event){
-	if(event.propertyName == 'transform'){
-		self.reachedDestination();
-	}
+		if(event.propertyName == 'transform'){
+			self.reachedDestination();
+		}
 	});
 
 	document.body.appendChild(element);
@@ -114,7 +115,7 @@ server.prototype.addRequest = function(request){
 server.prototype.removeRequest = function(request){
 	this.requests.splice(this.requests.indexOf(request), 1);
 	if(this.requests.length == 0 ){
-		this.remove();
+		window.setTimeout(this.remove.bind(this), request_over_wait);
 	}
 };
 server.prototype.createElement = function(){
@@ -126,8 +127,10 @@ server.prototype.createElement = function(){
 	return element;
 };
 server.prototype.remove = function(){
-	this.element.parentElement.removeChild(this.element);
-	servers.remove(this);
+	if(this.requests.length == 0){
+		this.element.parentElement.removeChild(this.element);
+		servers.remove(this);
+	}
 }
 server.prototype.requested = function(){
 	this.count++;
@@ -154,7 +157,7 @@ client.prototype.removeRequest = function(request){
 	this.requests.splice(this.requests.indexOf(request), 1);
 
 	if(this.requests.length == 0 ){
-		this.remove();
+		window.setTimeout(this.remove.bind(this), request_over_wait);
 	}
 };
 client.prototype.createElement = function(){
@@ -166,8 +169,22 @@ client.prototype.createElement = function(){
 	return element;
 };
 client.prototype.remove = function(){
-	this.element.parentElement.removeChild(this.element);
-	clients.remove(this);
+	if(this.requests.length == 0){
+		//while the removal animation is playing, it should already be considered
+		//to not exist
+		clients.remove(this);
+		this.element.style.height = 0;
+		this.element.style['margin-top'] = 0;
+		this.element.style['margin-bottom'] = 0;
+		this.element.style['padding-top'] = 0;
+		this.element.style['padding-bottom'] = 0;
+		var self = this;
+		this.element.addEventListener('transitionend', function(event){
+			if(event.propertyName == 'height'){
+				self.element.parentElement.removeChild(self.element);
+			}
+		});
+	}
 }
 client.prototype.requested = function(){
 	this.count++;
@@ -180,11 +197,11 @@ window.onload = function(){
 		var new_client = new client(data.from);
 		var new_request = new request(new_client, new_server);
 		log_entries.push(data);
-		timeline_update();
+		//timeline_update();
 	});
 	socket.on('past', function(data){
 		log_entries = data;
-		timeline_update();
+		//timeline_update();
 	});
 
 	clients_panel = document.getElementById('clients-list');

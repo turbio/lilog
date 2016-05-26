@@ -9,25 +9,71 @@ var servers_panel = null;
 var log_entries = [];
 var requests = [];
 
-var clients = [];
-clients.find = function(name){
-	return Array.from(this).find(function(c){
-		return name == c.name;
-	});
-}
-clients.remove = function(client){
-	this.splice(this.indexOf(client), 1);
-}
+var clients = {
+	find: function(name){
+		return this.arr.find(function(c){
+			return name == c.name;
+		});
+	},
+	remove: function(client){
+		this.arr.splice(this.arr.indexOf(client), 1);
+		while(client.element.firstChild){
+			client.element.removeChild(client.element.firstChild);
+		}
+	},
+	push: function(client){
+		this.arr.push(client);
+	},
+	get_entry: function(){
+		available = Array.from(clients_panel.children).find(function(l){
+			return !l.hasChildNodes();
+		});
 
-var servers = [];
-servers.find = function(name){
-	return Array.from(this).find(function(c){
-		return name == c.name;
-	});
-}
-servers.remove = function(server){
-	this.splice(this.indexOf(server), 1);
-}
+		if(!available){
+			available = document.createElement('li');
+			available.addEventListener('animationend', function(event){
+				this.classList.remove('blink');
+			});
+			clients_panel.appendChild(available);
+		}
+
+		return available;
+	},
+	arr: []
+};
+
+var servers = {
+	find: function(name){
+		return this.arr.find(function(c){
+			return name == c.name;
+		});
+	},
+	remove: function(server){
+		this.arr.splice(this.arr.indexOf(server), 1);
+		while(server.element.firstChild){
+			server.element.removeChild(server.element.firstChild);
+		}
+	},
+	push: function(server){
+		this.arr.push(server);
+	},
+	get_entry: function(){
+		available = Array.from(servers_panel.children).find(function(l){
+			return !l.hasChildNodes();
+		});
+
+		if(!available){
+			available = document.createElement('li');
+			available.addEventListener('animationend', function(event){
+				this.classList.remove('blink');
+			});
+			servers_panel.appendChild(available);
+		}
+
+		return available;
+	},
+	arr: []
+};
 
 function request(from, to){
 	to.addRequest(this);
@@ -37,6 +83,8 @@ function request(from, to){
 	this.to = to;
 	this.direction = 'to';
 	this.element = this.createElement();
+
+	requests.push(this);
 }
 request.prototype.createElement = function(){
 	var element = document.createElement('div');
@@ -68,8 +116,6 @@ request.prototype.createElement = function(){
 
 	document.body.appendChild(element);
 	return element;
-
-	requests.push(this);
 };
 request.prototype.direction = 'to';
 request.prototype.reachedDestination = function(){
@@ -95,7 +141,7 @@ request.prototype.remove = function(){
 	this.element.parentElement.removeChild(this.element);
 
 	var location = requests.indexOf(this);
-	requests.splice(location);
+	requests.splice(location, 1);
 };
 
 function server(name){
@@ -122,31 +168,17 @@ server.prototype.removeRequest = function(request){
 	}
 };
 server.prototype.createElement = function(){
-	var element = document.createElement('div');
-	element.innerHTML = this.name;
+	var text = document.createElement('div');
+	text.innerHTML = this.name;
 
-	element.addEventListener('animationend', function(event){
-		this.classList.remove('blink');
-	});
+	var entry = servers.get_entry();
+	entry.appendChild(text);
 
-	servers_panel.appendChild(element);
-
-	return element;
+	return entry;
 };
 server.prototype.remove = function(){
 	if(this.requests.length == 0){
-		this.element.style.height = 0;
-		this.element.style['margin-top'] = 0;
-		this.element.style['margin-bottom'] = 0;
-		this.element.style['padding-top'] = 0;
-		this.element.style['padding-bottom'] = 0;
 		servers.remove(this);
-		var self = this;
-		this.element.addEventListener('transitionend', function(event){
-			if(event.propertyName == 'height'){
-				self.element.parentElement.removeChild(self.element);
-			}
-		});
 	}
 }
 server.prototype.requested = function(){
@@ -178,32 +210,19 @@ client.prototype.removeRequest = function(request){
 	}
 };
 client.prototype.createElement = function(){
-	var element = document.createElement('div');
-	element.innerHTML = this.name;
-	element.addEventListener('animationend', function(event){
-		this.classList.remove('blink');
-	});
+	var text = document.createElement('div');
+	text.innerHTML = this.name;
 
-	clients_panel.appendChild(element);
+	var entry = clients.get_entry();
+	entry.appendChild(text);
 
-	return element;
+	return entry;
 };
 client.prototype.remove = function(){
 	if(this.requests.length == 0){
 		//while the removal animation is playing, it should already be considered
 		//to not exist
 		clients.remove(this);
-		this.element.style.height = 0;
-		this.element.style['margin-top'] = 0;
-		this.element.style['margin-bottom'] = 0;
-		this.element.style['padding-top'] = 0;
-		this.element.style['padding-bottom'] = 0;
-		var self = this;
-		this.element.addEventListener('transitionend', function(event){
-			if(event.propertyName == 'height'){
-				self.element.parentElement.removeChild(self.element);
-			}
-		});
 	}
 }
 client.prototype.requested = function(){

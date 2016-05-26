@@ -5,7 +5,10 @@ body{
 	overflow: hidden;
 	background: #607D8B;
 }
-
+ul{
+	margin: 0;
+	padding: 0;
+}
 #timeline{
 	position: absolute;
 	bottom: 0;
@@ -34,6 +37,7 @@ body{
 	background: #455A64;
 	box-shadow: 0 0 10px black;
 	overflow: auto;
+	padding-top: .25em;
 }
 #clients{
 	left: 0;
@@ -54,23 +58,29 @@ body{
 .blink{
 	animation: blink .25s;
 }
-.list > div{
+.list > li{
+	position: relative;
+	z-index: 2;
+
+	height: 1.25em;
+	margin-bottom: .25em;
+	padding: .25em;
+}
+.list > li:not(:empty){
+	background: #607D8B;
+}
+.list > li > div{
 	position: relative;
 	color: #fff;
-	background: #607D8B;
-	padding: .25em .5em;
 	font-weight: bold;
-	height: 1.25em;
 	overflow: hidden;
-	transition: height .25s, margin .25s, padding .25s;
-	z-index: 2;
 }
-#clients > div{
-	margin: 0 .25em .25em 0;
+#clients > li{
+	margin-right: .25em;
 	border-radius: 0 .25em .25em 0;
 }
-#servers > div{
-	margin: 0 0 .25em .25em;
+#servers > li{
+	margin-left: .25em;
 	border-radius: .25em 0 0 .25em;
 }
 .request{
@@ -81,7 +91,7 @@ body{
 	background: red;
 
 	transform: translate(0, 0);
-	transition: transform 2s, width .25s, height .25s;
+	transition: transform linear 2s, width .25s, height .25s;
 
 	z-index: 1;
 }

@@ -42,13 +42,26 @@ body{
 #servers{
 	right: 0;
 }
+@keyframes blink{
+	0%{
+	}
+	50%{
+		background: #90aDbB;
+	}
+	100%{
+	}
+}
+.blink{
+	animation: blink .25s;
+}
 .list > div{
 	position: relative;
 	color: #fff;
 	background: #607D8B;
 	padding: .25em .5em;
 	font-weight: bold;
-	height: 1.25em;
+	/*height: 1.25em;*/
+	overflow: hidden;
 	transition: height 2s, margin 2s, padding 2s;
 	z-index: 2;
 }

@@ -82,8 +82,11 @@ request.prototype.reachedDestination = function(){
 		this.element.style.transform = 'translate('
 			+ dest_pos[0] + 'px ,'
 			+ dest_pos[1] + 'px)';
+
+		this.to.element.classList.add('blink');
 	}else{
 		this.remove();
+		this.from.element.classList.add('blink');
 	}
 };
 request.prototype.remove = function(){
@@ -121,6 +124,10 @@ server.prototype.removeRequest = function(request){
 server.prototype.createElement = function(){
 	var element = document.createElement('div');
 	element.innerHTML = this.name;
+
+	element.addEventListener('animationend', function(event){
+		this.classList.remove('blink');
+	});
 
 	servers_panel.appendChild(element);
 
@@ -163,6 +170,9 @@ client.prototype.removeRequest = function(request){
 client.prototype.createElement = function(){
 	var element = document.createElement('div');
 	element.innerHTML = this.name;
+	element.addEventListener('animationend', function(event){
+		this.classList.remove('blink');
+	});
 
 	clients_panel.appendChild(element);
 
@@ -180,7 +190,7 @@ client.prototype.remove = function(){
 		this.element.style['padding-bottom'] = 0;
 		var self = this;
 		this.element.addEventListener('transitionend', function(event){
-			if(event.propertyName == 'height'){
+			if(event.propertyName == 'margin-top'){
 				self.element.parentElement.removeChild(self.element);
 			}
 		});

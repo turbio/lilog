@@ -46,13 +46,19 @@ body{
 	position: relative;
 	color: #fff;
 	background: #607D8B;
-	margin: .5em 0 .5em .5em;
 	padding: .25em .5em;
 	font-weight: bold;
-	border-radius: .25em 0 0 .25em;
 	height: 1.25em;
 	transition: height 2s, margin 2s, padding 2s;
 	z-index: 2;
+}
+#clients > div{
+	margin: .25em .25em .25em 0;
+	border-radius: 0 .25em .25em 0;
+}
+#servers > div{
+	margin: .25em 0 .25em .25em;
+	border-radius: .25em 0 0 .25em;
 }
 .request{
 	position: absolute;

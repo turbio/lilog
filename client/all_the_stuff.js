@@ -135,8 +135,18 @@ server.prototype.createElement = function(){
 };
 server.prototype.remove = function(){
 	if(this.requests.length == 0){
-		this.element.parentElement.removeChild(this.element);
+		this.element.style.height = 0;
+		this.element.style['margin-top'] = 0;
+		this.element.style['margin-bottom'] = 0;
+		this.element.style['padding-top'] = 0;
+		this.element.style['padding-bottom'] = 0;
 		servers.remove(this);
+		var self = this;
+		this.element.addEventListener('transitionend', function(event){
+			if(event.propertyName == 'height'){
+				self.element.parentElement.removeChild(self.element);
+			}
+		});
 	}
 }
 server.prototype.requested = function(){
@@ -190,7 +200,7 @@ client.prototype.remove = function(){
 		this.element.style['padding-bottom'] = 0;
 		var self = this;
 		this.element.addEventListener('transitionend', function(event){
-			if(event.propertyName == 'margin-top'){
+			if(event.propertyName == 'height'){
 				self.element.parentElement.removeChild(self.element);
 			}
 		});

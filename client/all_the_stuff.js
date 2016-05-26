@@ -90,20 +90,21 @@ request.prototype.createElement = function(){
 	var element = document.createElement('div');
 	element.classList.add('request');
 
-	var from_dim = elementDim(this.from.element);
-	from_dim[0] += (from_dim[2] - 10);
+	this.source_dimensions = elementDim(this.from.element);
+	this.source_dimensions[0] += (this.source_dimensions[2] - 10);
 
-	var to_dim = elementDim(this.to.element);
+	this.destination_dimensions = elementDim(this.to.element);
 
 	element.style.transform = 'translate('
-		+ from_dim[0] + 'px ,'
-		+ from_dim[1] + 'px)';
+		+ this.source_dimensions[0] + 'px ,'
+		+ this.source_dimensions[1] + 'px)';
 
+	var self = this;
 	element.addEventListener('DOMNodeInserted', function(){
 		window.setTimeout(function(){
 			element.style.transform = 'translate('
-				+ to_dim[0] + 'px ,'
-				+ to_dim[1] + 'px)';
+				+ self.destination_dimensions[0] + 'px ,'
+				+ self.destination_dimensions[1] + 'px)';
 		}, 1);
 	});
 
@@ -122,12 +123,9 @@ request.prototype.reachedDestination = function(){
 	if(this.direction == 'to'){
 		this.direction = 'from';
 
-		var dest_pos = elementDim(this.from.element);
-		dest_pos[0] += dest_pos[2] - 10;
-
 		this.element.style.transform = 'translate('
-			+ dest_pos[0] + 'px ,'
-			+ dest_pos[1] + 'px)';
+			+ this.source_dimensions[0] + 'px ,'
+			+ this.source_dimensions[1] + 'px)';
 
 		this.to.element.classList.add('blink');
 	}else{
@@ -232,10 +230,12 @@ client.prototype.requested = function(){
 window.onload = function(){
 	var socket = io.connect('http://' + window.location.host);
 	socket.on('new', function(data){
-		var new_server = new server(data.path);
-		var new_client = new client(data.from);
-		var new_request = new request(new_client, new_server);
-		log_entries.push(data);
+		if(data){
+			var new_server = new server(data.path);
+			var new_client = new client(data.from);
+			var new_request = new request(new_client, new_server);
+			log_entries.push(data);
+		}
 	});
 	socket.on('past', function(data){
 		log_entries = data;

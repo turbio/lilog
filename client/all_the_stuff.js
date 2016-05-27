@@ -20,6 +20,9 @@ var clients = {
 		while(client.element.firstChild){
 			client.element.removeChild(client.element.firstChild);
 		}
+		while(!clients_panel.lastChild.hasChildNodes()){
+			clients_panel.removeChild(clients_panel.lastChild);
+		}
 	},
 	push: function(client){
 		this.arr.push(client);

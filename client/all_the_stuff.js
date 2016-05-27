@@ -56,6 +56,9 @@ var servers = {
 		while(server.element.firstChild){
 			server.element.removeChild(server.element.firstChild);
 		}
+		while(!servers_panel.lastChild.hasChildNodes()){
+			servers_panel.removeChild(servers_panel.lastChild);
+		}
 	},
 	push: function(server){
 		this.arr.push(server);

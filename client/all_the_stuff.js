@@ -6,6 +6,27 @@ var request_over_wait = 2000;
 var clients_panel = null;
 var servers_panel = null;
 
+
+
+var colors = [
+	'#F44336',
+	'#E91E63',
+	'#9C27B0',
+	'#673AB7',
+	'#3F51B5',
+	'#2196F3',
+	'#03A9F4',
+	'#00BCD4',
+	'#009688',
+	'#4CAF50',
+	'#8BC34A',
+	'#CDDC39',
+	'#FFEB3B',
+	'#FFC107',
+	'#FF9800',
+	'#FF5722'
+];
+
 var log_entries = [];
 var requests = [];
 
@@ -81,7 +102,7 @@ var servers = {
 	arr: []
 };
 
-function request(from, to){
+function request(from, to, size, verb, status){
 	to.addRequest(this);
 	from.addRequest(this);
 
@@ -96,10 +117,14 @@ request.prototype.createElement = function(){
 	var element = document.createElement('div');
 	element.classList.add('request');
 
+	var own_dimensions = elementDim(element);
+
 	this.source_dimensions = elementDim(this.from.element);
+	this.source_dimensions[1] += 7;
 	this.source_dimensions[0] += (this.source_dimensions[2] - 10);
 
 	this.destination_dimensions = elementDim(this.to.element);
+	this.destination_dimensions[1] += 7
 
 	element.style.transform = 'translate('
 		+ this.source_dimensions[0] + 'px ,'

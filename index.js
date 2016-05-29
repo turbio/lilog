@@ -65,7 +65,7 @@ function startServer(){
 	var server_port = (args.port || args.p || 3000)
 	server.listen(server_port);
 
-	app.use(express.static('client'));
+	app.use(express.static('public'));
 
 	file.on('line', function(data){
 		var new_entry = logparser.parse(data);

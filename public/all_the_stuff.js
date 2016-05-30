@@ -87,6 +87,10 @@ function request(from, to, size, verb, status){
 
 	this.from = from;
 	this.to = to;
+	this.size = size;
+	this.verb = verb;
+	this.status = status;
+
 	this.direction = 'to';
 	this.element = this.createElement();
 
@@ -95,6 +99,9 @@ function request(from, to, size, verb, status){
 request.prototype.createElement = function(){
 	var element = document.createElement('div');
 	element.classList.add('request');
+	element.setAttribute('verb', this.verb);
+	element.setAttribute('size', this.size);
+	element.setAttribute('status', this.status);
 
 	var own_dimensions = elementDim(element);
 
@@ -243,7 +250,12 @@ window.onload = function(){
 		if(data){
 			var new_server = new server(data.path);
 			var new_client = new client(data.from);
-			var new_request = new request(new_client, new_server);
+			var new_request = new request(
+				new_client,
+				new_server,
+				data.size,
+				data.verb,
+				data.status);
 			log_entries.push(data);
 		}
 	});

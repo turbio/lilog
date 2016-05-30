@@ -103,25 +103,21 @@ request.prototype.createElement = function(){
 	element.setAttribute('size', this.size);
 	element.setAttribute('status', this.status);
 
-	var own_dimensions = elementDim(element);
+	this.from_position = $(this.from.element).offset();
+	this.from_position.left += $(this.from.element).width();
 
-	this.source_dimensions = elementDim(this.from.element);
-	this.source_dimensions[1] += 7;
-	this.source_dimensions[0] += (this.source_dimensions[2] - 10);
-
-	this.destination_dimensions = elementDim(this.to.element);
-	this.destination_dimensions[1] += 7
+	this.to_position = $(this.to.element).offset();
 
 	element.style.transform = 'translate('
-		+ this.source_dimensions[0] + 'px ,'
-		+ this.source_dimensions[1] + 'px)';
+		+ this.from_position.left + 'px ,'
+		+ this.from_position.top + 'px)';
 
 	var self = this;
 	element.addEventListener('DOMNodeInserted', function(){
 		window.setTimeout(function(){
 			element.style.transform = 'translate('
-				+ self.destination_dimensions[0] + 'px ,'
-				+ self.destination_dimensions[1] + 'px)';
+				+ self.to_position.left + 'px ,'
+				+ self.to_position.top + 'px)';
 		}, 1);
 	});
 
@@ -141,8 +137,8 @@ request.prototype.reachedDestination = function(){
 		this.direction = 'from';
 
 		this.element.style.transform = 'translate('
-			+ this.source_dimensions[0] + 'px ,'
-			+ this.source_dimensions[1] + 'px)';
+			+ this.from_position.left + 'px ,'
+			+ this.from_position.top + 'px)';
 
 		var size_as_dimensions = (Math.log(this.size + 1) / 2) + 10;
 
@@ -249,7 +245,7 @@ client.prototype.requested = function(){
 	this.count++;
 };
 
-window.onload = function(){
+$(function(){
 	var socket = io.connect('http://' + window.location.host);
 	socket.on('new', function(data){
 		if(data){
@@ -270,18 +266,4 @@ window.onload = function(){
 
 	clients_panel = document.getElementById('clients');
 	servers_panel = document.getElementById('servers');
-};
-
-function elementDim(element){
-	if(element){
-		var p = elementDim(element.parentElement);
-		return [
-			p[0] + element.offsetLeft,
-			p[1] + element.offsetTop,
-			element.offsetWidth,
-			element.offsetHeight
-		];
-	}else{
-		return [0, 0, 0, 0]
-	}
-}
+});

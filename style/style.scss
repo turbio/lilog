@@ -2,10 +2,12 @@
 	box-shadow: 0 0 10px black;
 }
 
+$resource-padding: .5em;
+
 $light: #90A4AE;
 $dark: #607D8B;
 $controls-bg: rgba(0, 0, 0, .5);
-$blink-color: red;
+$blink-color: lighten($light, 10%);
 
 //material colors
 $red:			#F44336;
@@ -44,12 +46,19 @@ body{
 	font-family: monospace;
 	margin: 0;
 	padding: 0;
-	overflow: hidden;
 	background: $light;
 }
 ul{
 	margin: 0;
 	padding: 0;
+}
+#lists{
+	position: absolute;
+	top: 0;
+	bottom: 15%;
+	left: 0;
+	right: 0;
+	overflow: auto;
 }
 #timeline{
 	@include shadow;
@@ -75,16 +84,16 @@ ul{
 	@include shadow;
 	position: absolute;
 	top: 0;
-	bottom: 15%;
+	bottom: 0;
 	width: 33%;
 	min-width: 200px;
 	background: $dark;
-	overflow: auto;
-	padding-top: .25em;
+	/*overflow: auto;*/
+	padding-top: $resource-padding;
+	padding-bottom: $resource-padding;
 }
 #clients{
 	left: 0;
-	direction: rtl;
 }
 #servers{
 	right: 0;
@@ -126,11 +135,11 @@ ul{
 	}
 }
 #clients > li{
-	margin-right: .25em;
+	margin-right: $resource-padding;
 	border-radius: 0 .25em .25em 0;
 }
 #servers > li{
-	margin-left: .25em;
+	margin-left: $resource-padding;
 	border-radius: .25em 0 0 .25em;
 }
 .request{

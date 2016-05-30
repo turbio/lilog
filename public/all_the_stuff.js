@@ -128,7 +128,7 @@ request.prototype.createElement = function(){
 		}
 	});
 
-	document.body.appendChild(element);
+	document.getElementById('lists').appendChild(element);
 	return element;
 };
 request.prototype.direction = 'to';

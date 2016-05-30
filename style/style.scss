@@ -26,12 +26,10 @@ $orange:		#FF9800;
 $deep-range:	#FF5722;
 
 //request colors
-$GET: $blue;
-$POST: $green;
-$HEAD: $yellow;
-$OTHER: $orange;
-
-//status colors
+$VERB-GET: $blue;
+$VERB-POST: $green;
+$VERB-HEAD: $yellow;
+$VERB-OTHER: $orange;
 
 body{
 	font-family: monospace;
@@ -128,16 +126,14 @@ ul{
 	z-index: 1;
 
 	&[verb="GET"]{
-		background: $GET;
+		background: $VERB-GET;
 	}
 	&[verb="POST"]{
-		background: $POST;
+		background: $VERB-POST;
 	}
 	&[verb="HEAD"]{
-		background: $HEAD;
+		background: $VERB-HEAD;
 	}
 
-	border: 2px white solid;
-
-	background: $OTHER;
+	background: $VERB-OTHER;
 }

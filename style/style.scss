@@ -2,8 +2,8 @@
 	box-shadow: 0 0 10px black;
 }
 
-$light: #607D8B;
-$dark: #455A64;
+$light: #90A4AE;
+$dark: #607D8B;
 $controls-bg: rgba(0, 0, 0, .5);
 $blink-color: red;
 
@@ -23,13 +23,22 @@ $lime:			#CDDC39;
 $yellow:		#FFEB3B;
 $amber:			#FFC107;
 $orange:		#FF9800;
-$deep-range:	#FF5722;
+$deep-orange:	#FF5722;
 
 //request colors
-$VERB-GET: $blue;
-$VERB-POST: $green;
-$VERB-HEAD: $yellow;
-$VERB-OTHER: $orange;
+$VERB-GET:		$green;
+$VERB-HEAD:		$yellow;
+
+$VERB-POST:		$blue;
+$VERB-PUT:		$indigo;
+$VERB-PATCH:	$deep-purple;
+$VERB-DELETE:	$red;
+
+$VERB-CONNECT:	$orange;
+$VERB-OPTIONS:	$deep-orange;
+$VERB-TRACE:	$amber;
+
+$VERB-OTHER:	#f0f;
 
 body{
 	font-family: monospace;
@@ -96,6 +105,9 @@ ul{
 	margin-bottom: .25em;
 	padding: .25em;
 
+	overflow: hidden;
+	white-space: nowrap;
+
 	&:not(:empty){
 		background: $light;
 	}
@@ -134,6 +146,26 @@ ul{
 	&[verb="HEAD"]{
 		background: $VERB-HEAD;
 	}
+	&[verb="PUT"]{
+		background: $VERB-PUT;
+	}
+	&[verb="DELETE"]{
+		background: $VERB-DELETE;
+	}
+	&[verb="TRACE"]{
+		background: $VERB-TRACE;
+	}
+	&[verb="CONNECT"]{
+		background: $VERB-CONNECT;
+	}
+	&[verb="PATCH"]{
+		background: $VERB-PATCH;
+	}
+	&[verb="OPTIONS"]{
+		background: $VERB-OPTIONS;
+	}
+
+	border: 2px #fff solid;
 
 	background: $VERB-OTHER;
 }

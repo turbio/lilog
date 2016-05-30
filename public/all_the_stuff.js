@@ -144,6 +144,11 @@ request.prototype.reachedDestination = function(){
 			+ this.source_dimensions[0] + 'px ,'
 			+ this.source_dimensions[1] + 'px)';
 
+		var size_as_dimensions = (Math.log(this.size + 1) / 2) + 10;
+
+		this.element.style.width = size_as_dimensions + 'px';
+		this.element.style.height = size_as_dimensions + 'px';
+
 		this.to.element.classList.add('blink');
 	}else{
 		this.remove();

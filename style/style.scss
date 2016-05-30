@@ -97,6 +97,13 @@ ul{
 .blink{
 	animation: blink .25s;
 }
+@keyframes remove-resource{
+	0%{ opacity: 1 }
+	100%{ opacity: 0 }
+}
+.remove-resource{
+	animation: remove-resource 1s;
+}
 .resource-list > li{
 	position: relative;
 	z-index: 2;

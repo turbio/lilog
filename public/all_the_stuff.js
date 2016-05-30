@@ -6,8 +6,6 @@ var request_over_wait = 2000;
 var clients_panel = null;
 var servers_panel = null;
 
-
-
 var colors = [
 	'#F44336',
 	'#E91E63',

@@ -84,13 +84,11 @@ ul{
 	@include shadow;
 	position: absolute;
 	top: 0;
-	bottom: 0;
+	min-height: 100%;
 	width: 33%;
 	min-width: 200px;
 	background: $dark;
-	/*overflow: auto;*/
-	padding-top: $resource-padding;
-	padding-bottom: $resource-padding;
+	overflow: hidden;
 }
 #clients{
 	left: 0;
@@ -123,6 +121,8 @@ ul{
 
 	overflow: hidden;
 	white-space: nowrap;
+	margin-top: $resource-padding;
+	margin-bottom: $resource-padding;
 
 	&:not(:empty){
 		background: $light;
@@ -154,35 +154,46 @@ ul{
 
 	z-index: 1;
 
-	&[verb="GET"]{
-		background: $VERB-GET;
-	}
-	&[verb="POST"]{
-		background: $VERB-POST;
-	}
-	&[verb="HEAD"]{
-		background: $VERB-HEAD;
-	}
-	&[verb="PUT"]{
-		background: $VERB-PUT;
-	}
-	&[verb="DELETE"]{
-		background: $VERB-DELETE;
-	}
-	&[verb="TRACE"]{
-		background: $VERB-TRACE;
-	}
-	&[verb="CONNECT"]{
-		background: $VERB-CONNECT;
-	}
-	&[verb="PATCH"]{
-		background: $VERB-PATCH;
-	}
-	&[verb="OPTIONS"]{
-		background: $VERB-OPTIONS;
-	}
-
 	/*border: 2px #fff solid;*/
 
 	background: $VERB-OTHER;
 }
+.timeline-sec{
+
+}
+.timeline-entry{
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	width: 2px;
+	background: #000;
+}
+
+[verb="GET"]{
+	background: $VERB-GET;
+}
+[verb="POST"]{
+	background: $VERB-POST;
+}
+[verb="HEAD"]{
+	background: $VERB-HEAD;
+}
+[verb="PUT"]{
+	background: $VERB-PUT;
+}
+[verb="DELETE"]{
+	background: $VERB-DELETE;
+}
+[verb="TRACE"]{
+	background: $VERB-TRACE;
+}
+[verb="CONNECT"]{
+	background: $VERB-CONNECT;
+}
+[verb="PATCH"]{
+	background: $VERB-PATCH;
+}
+[verb="OPTIONS"]{
+	background: $VERB-OPTIONS;
+}
+

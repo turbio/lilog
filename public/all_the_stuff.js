@@ -162,36 +162,46 @@ request.prototype.remove = function(){
 	this.element.remove();
 };
 
+var timeline = {
+	new_entry: function(time, verb){
+		var entry = this.entries[time];
+
+		if(!entry){
+			entry = {
+				verbs: {},
+				element: $('<div></div>')
+					.attr('time', time)
+					.addClass('timeline-sec')
+					.css('left', time)
+			};
+
+			entry.element.appendTo(this.element);
+
+			this.entries[time] = entry;
+		}
+
+		if(entry.verbs[verb]){
+			entry.verbs[verb]++;
+		}else{
+			entry.verbs[verb] = 1;
+		}
+	},
+	left: 10 * 1000,
+	right: 0,
+	max: 0,
+	entries: {}
+};
+
 var request_speed = 2000;
-var timeline = null;
 var timeline_ctx = null;
 //var timeline_update_interval = 500;
 var timeline_update_interval = 50000;
 var request_over_wait = 2000;
 var servers_panel = null;
-
-var log_entries = [];
+var startTime = Date.now();
 
 var servers;
 var clients;
-
-var timeline = {
-	left: 10 * 1000,
-	right: 0,
-	max: 0,
-	new: function(){
-
-	},
-	entries: []
-};
-
-function timeline_entry(data){
-	var entry = $('<div></div>')
-		.addClass('timeline-point')
-		.attr('verb', data.verb)
-		.css('right', ((Date.now() - data.time) / 250) + 'px')
-		.appendTo(timeline);
-}
 
 $(function(){
 	var socket = io.connect('http://' + window.location.host);
@@ -206,16 +216,14 @@ $(function(){
 				data.size,
 				data.verb,
 				data.status);
-			log_entries.push(data);
-			timeline_entry(data);
+
+			timeline.new_entry(data.time, data.verb);
 		}
 	});
 	socket.on('past', function(data){
-		log_entries = data;
 	});
 
 	servers = new resource_list($('#servers'));
 	clients = new resource_list($('#clients'));
-
-	timeline = document.getElementById('timeline');
+	timeline.element = $('#timeline');
 });

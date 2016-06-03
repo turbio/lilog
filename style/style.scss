@@ -85,6 +85,9 @@ ul{
 		top: 25px;
 		bottom: 0;
 
+		background: url("/track_bg.svg");
+		background-repeat: repeat;
+
 		transition: width 1s;
 	}
 }

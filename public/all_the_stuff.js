@@ -162,6 +162,10 @@ request.prototype.remove = function(){
 	this.element.remove();
 };
 
+function timeline_entry(time, verb){
+
+}
+
 var timeline = {
 	new_entry: function(time, verb){
 		var entry = this.entries[time];
@@ -189,6 +193,7 @@ var timeline = {
 			if(entry.count > this.max){
 				this.max = entry.count;
 			}
+			entry.element.height((entry.count / this.max) * 100);
 		}else{
 			entry.verbs[verb] = 1;
 		}
@@ -205,10 +210,10 @@ var timeline = {
 	left: 10 * 1000,
 	right: 0,
 
-	max: 2,
+	max: 1,
 
 	entry_width: 2,
-	entry_spacing: 1,
+	entry_spacing: 2,
 
 	entries: {}
 };

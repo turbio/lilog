@@ -172,7 +172,7 @@ var timeline = {
 				element: $('<div></div>')
 					.attr('time', time)
 					.addClass('timeline-sec')
-					.css('left', time)
+					.css('left', time - startTime)
 			};
 
 			entry.element.appendTo(this.element);
@@ -198,7 +198,7 @@ var timeline_ctx = null;
 var timeline_update_interval = 50000;
 var request_over_wait = 2000;
 var servers_panel = null;
-var startTime = Date.now();
+var startTime = Math.floor(Date.now() / 1000);
 
 var servers;
 var clients;

@@ -10,7 +10,7 @@ module.exports.parse = function(str){
 	if(parts != null){
 		return {
 			from: parts[1],
-			time: Date.parse(parts[4].replace(parse_date, format_date)),
+			time: Date.parse(parts[4].replace(parse_date, format_date)) / 1000,
 			path: parts[6],
 			status: parts[8],
 			size: parts[9],

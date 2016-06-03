@@ -161,9 +161,7 @@ ul{
 .timeline-sec{
 	width: 2px;
 	height: 100%;
-	/*&:nth-child(even){*/
-		/*background: rgba(255, 255, 255, .25);*/
-	/*}*/
+	background: #fff;
 }
 .timeline-entry{
 	position: absolute;

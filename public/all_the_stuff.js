@@ -193,7 +193,7 @@ var timeline = {
 			if(entry.count > this.max){
 				this.max = entry.count;
 			}
-			entry.element.height((entry.count / this.max) * 100);
+			entry.element.css('height', ((entry.count / this.max) * 100) + '%');
 		}else{
 			entry.verbs[verb] = 1;
 		}
@@ -206,9 +206,6 @@ var timeline = {
 			(Math.floor(Date.now() / 1000) - startTime)
 			* (this.entry_width + this.entry_spacing) + 2);
 	},
-
-	left: 10 * 1000,
-	right: 0,
 
 	max: 1,
 

@@ -212,8 +212,8 @@ var timeline = {
 	},
 	track_width: function(){
 		this.element.width(
-			(Math.floor(Date.now() / 1000) - startTime)
-			* (this.entry_width + this.entry_spacing) + 2);
+			((Math.floor(Date.now() / 1000) - startTime) + 2)
+			* (this.entry_width + this.entry_spacing));
 	},
 
 	max: 1,

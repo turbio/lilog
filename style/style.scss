@@ -71,6 +71,7 @@ ul{
 	overflow: hidden;
 	z-index: 3;
 
+
 	#controls{
 		position: absolute;
 		top: 0;
@@ -79,16 +80,24 @@ ul{
 		height: 25px;
 		background: $controls-bg;
 	}
-	#track{
+}
+#track{
+	position: absolute;
+	right: 0;
+	top: 25px;
+	bottom: 0;
+
+	background: url("/track_bg.svg");
+	background-repeat: repeat;
+
+	transition: width 1s;
+
+	div{
 		position: absolute;
-		right: 0;
-		top: 25px;
 		bottom: 0;
+		background: #fff;
 
-		background: url("/track_bg.svg");
-		background-repeat: repeat;
-
-		transition: width 1s;
+		transition: height .25s;
 	}
 }
 .resource-list{
@@ -168,20 +177,6 @@ ul{
 	/*border: 2px #fff solid;*/
 
 	background: $VERB-OTHER;
-}
-.timeline-sec{
-	position: absolute;
-	bottom: 0;
-	width: 2px;
-	height: 100%;
-	background: #fff;
-}
-.timeline-entry{
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	width: 2px;
-	background: #000;
 }
 
 [verb="GET"]{

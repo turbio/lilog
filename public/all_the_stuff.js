@@ -162,44 +162,53 @@ request.prototype.remove = function(){
 	this.element.remove();
 };
 
-function timeline_entry(time, verb){
-
-}
-
 var timeline = {
-	new_entry: function(time, verb){
-		var entry = this.entries[time];
-
-		if(!entry){
-			entry = {
-				verbs: {},
-				element: $('<div></div>')
-					.attr('time', time)
-					.addClass('timeline-sec')
-					.css('width', this.entry_width)
-					.css('height', ((1 / this.max) * 100) + '%')
-					.css('left', this.left_pos(time)),
-				count: 1
-			};
-
-			entry.element.appendTo(this.element);
-
-			this.entries[time] = entry;
+	new_request: function(time, verb){
+		if(!this.last_entry || this.last_entry.time != time){
+			this.last_entry = this.new_entry(time);
 		}
 
-		if(entry.verbs[verb]){
-			entry.verbs[verb]++;
-			entry.count++;
-			if(entry.count > this.max){
-				this.max = entry.count;
-			}
-			entry.element.css('height', ((entry.count / this.max) * 100) + '%');
-		}else{
-			entry.verbs[verb] = 1;
+		var last = this.last_entry;
+
+		if(!verb in last.verbs){
+			last.verbs[verb] = 0;
 		}
+
+		last.count++;
+		last.element.attr('count', last.count);
+		last.verbs[verb]++;
+
+		last.element.css('height', this.get_height(last.count));
 	},
-	left_pos: function(time){
+	new_entry: function(time){
+		var elem = $('<div></div>');
+		elem.css('left', this.get_left(time));
+		elem.css('width', this.entry_width);
+		elem.attr('count', 0);
+		this.element.append(elem);
+
+		return {
+			verbs: {},
+			time: time,
+			count: 0,
+			element: elem
+		};
+	},
+	get_left: function(time){
 		return (time - startTime) * (this.entry_width + this.entry_spacing);
+	},
+	get_height: function(count){
+		if(count > this.max){
+			this.max = count;
+			var self = this;
+
+			this.element.children().each(function(){
+				elem = $(this);
+				elem.css('height', self.get_height(elem.attr('count')));
+			});
+		}
+
+		return ((count / this.max) * 100) + '%';
 	},
 	track_width: function(){
 		this.element.width(
@@ -212,7 +221,7 @@ var timeline = {
 	entry_width: 2,
 	entry_spacing: 2,
 
-	entries: {}
+	last_entry: null
 };
 
 var request_speed = 2000;
@@ -240,7 +249,7 @@ $(function(){
 				data.verb,
 				data.status);
 
-			timeline.new_entry(data.time, data.verb);
+			timeline.new_request(data.time, data.verb);
 		}
 	});
 	socket.on('past', function(data){

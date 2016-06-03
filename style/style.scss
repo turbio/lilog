@@ -79,6 +79,14 @@ ul{
 		height: 25px;
 		background: $controls-bg;
 	}
+	#track{
+		position: absolute;
+		right: 0;
+		top: 25px;
+		bottom: 0;
+
+		transition: width 1s;
+	}
 }
 .resource-list{
 	@include shadow;
@@ -159,6 +167,8 @@ ul{
 	background: $VERB-OTHER;
 }
 .timeline-sec{
+	position: absolute;
+	bottom: 0;
 	width: 2px;
 	height: 100%;
 	background: #fff;

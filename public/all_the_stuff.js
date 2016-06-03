@@ -172,7 +172,10 @@ var timeline = {
 				element: $('<div></div>')
 					.attr('time', time)
 					.addClass('timeline-sec')
-					.css('left', time - startTime)
+					.css('width', this.entry_width)
+					.css('height', ((1 / this.max) * 100) + '%')
+					.css('left', this.left_pos(time)),
+				count: 1
 			};
 
 			entry.element.appendTo(this.element);
@@ -182,13 +185,31 @@ var timeline = {
 
 		if(entry.verbs[verb]){
 			entry.verbs[verb]++;
+			entry.count++;
+			if(entry.count > this.max){
+				this.max = entry.count;
+			}
 		}else{
 			entry.verbs[verb] = 1;
 		}
 	},
+	left_pos: function(time){
+		return (time - startTime) * (this.entry_width + this.entry_spacing);
+	},
+	track_width: function(){
+		this.element.width(
+			(Math.floor(Date.now() / 1000) - startTime)
+			* (this.entry_width + this.entry_spacing) + 2);
+	},
+
 	left: 10 * 1000,
 	right: 0,
-	max: 0,
+
+	max: 2,
+
+	entry_width: 2,
+	entry_spacing: 1,
+
 	entries: {}
 };
 
@@ -225,5 +246,6 @@ $(function(){
 
 	servers = new resource_list($('#servers'));
 	clients = new resource_list($('#clients'));
-	timeline.element = $('#timeline');
+	timeline.element = $('#track');
+	window.setInterval(timeline.track_width.bind(timeline), 1000);
 });

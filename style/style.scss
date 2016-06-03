@@ -6,7 +6,7 @@ $resource-padding: .5em;
 
 $light: #90A4AE;
 $dark: #607D8B;
-$controls-bg: rgba(0, 0, 0, .5);
+$title-bg: rgba(0, 0, 0, .5);
 $blink-color: lighten($light, 10%);
 
 //material colors
@@ -70,16 +70,14 @@ ul{
 	background-color: $dark;
 	overflow: hidden;
 	z-index: 3;
-
-
-	#controls{
-		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
-		height: 25px;
-		background: $controls-bg;
-	}
+}
+.title{
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 25px;
+	background: $title-bg;
 }
 #track{
 	position: absolute;

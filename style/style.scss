@@ -90,11 +90,13 @@ ul{
 
 	transition: width .25s;
 
-	div{
+	>div{
 		position: absolute;
 		bottom: 0;
 		background: #fff;
 
+	}
+	div{
 		transition: height .25s;
 	}
 }
@@ -120,7 +122,7 @@ ul{
 	100%{ }
 }
 .blink{
-	animation: blink 25ms;
+	animation: blink 125ms;
 }
 .resource-list > li{
 	position: relative;

@@ -172,13 +172,25 @@ var timeline = {
 
 		var last = this.last_entry;
 
-		if(!verb in last.verbs){
+		if(!(verb in last.verbs)){
 			last.verbs[verb] = 0;
 		}
 
 		last.count++;
 		last.element.attr('count', last.count);
 		last.verbs[verb]++;
+
+		for(v in last.verbs){
+			var verb_elem = last.element.children('[verb=' + v + ']');
+
+			if(verb_elem.length == 0){
+				verb_elem = $('<div></div>')
+					.attr('verb', v)
+					.appendTo(last.element);
+			}
+
+			verb_elem.css('height', ((last.verbs[v] / last.count) * 100) + '%');
+		}
 
 		last.element.css('height', this.get_height(last.count));
 	},
@@ -190,7 +202,18 @@ var timeline = {
 		this.element.append(elem);
 
 		return {
-			verbs: {},
+			verbs: {
+				HEAD: 0,
+				GET: 0,
+
+				POST: 0,
+				PUT: 0,
+				DELETE: 0,
+
+				TRACE: 0,
+				CONNECT: 0,
+				OPTIONS: 0
+			},
 			time: time,
 			count: 0,
 			element: elem
@@ -230,7 +253,7 @@ var request_speed = 2000;
 var timeline_ctx = null;
 //var timeline_update_interval = 500;
 var timeline_update_interval = 50000;
-var request_over_wait = 2000;
+var request_over_wait = 5000;
 var servers_panel = null;
 var startTime = Math.floor(Date.now() / 1000);
 

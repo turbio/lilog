@@ -32,9 +32,13 @@ if(args.formats){
 }else if(args.help || args.h){
 	help();
 }else{
-	logparser = supported_parsers.find(function(p){
-		return p.name == (args.format || args.f || 'clf');
-	});
+	for(var i = 0; i < supported_parsers.length; i++){
+		if(supported_parsers[i].name == (args.format || args.f || 'clf')){
+			logparser = supported_parsers[i];
+			break;
+		}
+	}
+
 	if(!logparser){
 		help('no parser for format "' + (args.format || args.f || 'clf') + '"');
 	}

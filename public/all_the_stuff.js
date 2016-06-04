@@ -109,9 +109,11 @@ function request(from, to, size, verb, status){
 }
 request.prototype.createElement = function(){
 	this.from_position = this.from.element.offset();
+	this.from_position.top += $('#lists').scrollTop();
 	this.from_position.left += this.from.element.width();
 
 	this.to_position = this.to.element.offset();
+	this.to_position.top += $('#lists').scrollTop();
 
 	var element = $('<div></div>')
 		.addClass('request')

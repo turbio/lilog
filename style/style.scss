@@ -120,14 +120,7 @@ ul{
 	100%{ }
 }
 .blink{
-	animation: blink .25s;
-}
-@keyframes remove-resource{
-	0%{ opacity: 1 }
-	100%{ opacity: 0 }
-}
-.remove-resource{
-	animation: remove-resource 1s;
+	animation: blink 25ms;
 }
 .resource-list > li{
 	position: relative;

@@ -3,15 +3,18 @@ import random
 import time
 
 paths = [
-	'',
-	# 'index.html',
-	# 'style.css',
-	# 'stuff',
-	# 'this',
-	# 'is',
-	# 'a',
-	# 'test',
-	# 'wew',
+	'a',
+	'b',
+	'c',
+	'd',
+	'e',
+	'f',
+	'g',
+	'h',
+	'i',
+	'j',
+	'k',
+	'l'
 ]
 status = [
 	200,
@@ -19,16 +22,32 @@ status = [
 	400, 401, 403, 404,
 	500, 501, 502
 ]
+verbs = [
+	'HEAD',
+	'GET',
+	'GET',
+	'GET',
+	'GET',
+	'GET',
+	'GET',
+	'POST',
+	'POST',
+	'POST',
+	'POST',
+	'PUT',
+	'DELETE'
+]
 
 
 def logline():
-	return '%s - - [%s] "HEAD /%s HTTP/1.1" %s %s\n' % (
-		# '.'.join([str(random.randint(0, 255)) for i in range(4)]),
-		'0.0.0.0',
+	return '%s - - [%s] "%s /%s HTTP/1.1" %s %s\n' % (
+		'.'.join([str(random.randint(0, 1)) for i in range(4)]),
 		time.strftime('%d/%h/%Y:%H:%M:%S %z'),
+		random.choice(verbs),
 		random.choice(paths),
 		random.choice(status),
-		0)
+		random.randint(0, 10000))
+
 
 def new_entry(file):
 	file.write(logline())

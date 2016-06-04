@@ -243,7 +243,7 @@ var timeline = {
 
 	max: 1,
 
-	entry_width: 2,
+	entry_width: 4,
 	entry_spacing: 2,
 
 	last_entry: null

@@ -21,10 +21,6 @@ var log = [];
 
 var logpath = (args._[0] || args.path);
 
-if(!logpath){
-	help('must supply a log file path');
-}
-
 if(args.formats){
 	supported_parsers.forEach(function(p){
 		console.log(p.name);
@@ -32,6 +28,10 @@ if(args.formats){
 }else if(args.help || args.h){
 	help();
 }else{
+	if(!logpath){
+		help('must supply a log file path');
+	}
+
 	for(var i = 0; i < supported_parsers.length; i++){
 		if(supported_parsers[i].name == (args.format || args.f || 'clf')){
 			logparser = supported_parsers[i];

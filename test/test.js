@@ -58,6 +58,11 @@ describe('lilog logger', (done) => {
 			.map((parser) => parser.name)
 			.should.contain('clf');
 	});
+
+	it('should select a parser', () => {
+		log.setParser('clf');
+		log.selectedParser.name.should.eq('clf');
+	});
 });
 
 describe('lilog', () => { });

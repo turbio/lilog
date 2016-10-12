@@ -1,4 +1,5 @@
 # Lilog
+[![Build Status](https://travis-ci.org/turbio/lilog.svg?branch=master)](https://travis-ci.org/turbio/lilog)  
 live browser based http access log visualizer running on nodejs.
 
 ![bracey logo](readme_media/island.gif)

@@ -1,3 +1,5 @@
+const fs = require('fs');
+
 const build = (props) =>
 	`${props.ip} - - [${props.date}] "${props.verb} ${props.path} HTTP/1.1" `
 	+ `${props.status} ${props.size}`;
@@ -22,5 +24,15 @@ const gen = () => {
 	});
 };
 
+const log = (file, cb) => {
+	fs.appendFile(file, gen(), 'utf8', (err) => {
+		if (err) {
+			throw new Error(err);
+		}
+		cb();
+	});
+};
+
 module.exports.build = build;
 module.exports.gen = gen;
+module.exports.log = log;

@@ -18,7 +18,8 @@
     "eslint-plugin-react": "^6.4.1",
     "gulp": "^3.9.1",
     "gulp-sass": "^2.3.1",
-    "mocha": "^3.1.1"
+    "mocha": "^3.1.1",
+    "request": "^2.75.0"
   },
   "scripts": {
     "build": "gulp",

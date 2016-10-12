@@ -3,11 +3,13 @@ const fs = require('fs');
 const tail = require('tail').Tail;
 const socket = require('socket.io');
 const http = require('http');
+const path = require('path');
 
 const args = require('minimist')(process.argv.slice(2));
 
 const pathToParsers = './log_parser/';
-const supportedParsers = [];
+
+const cacheLength = 100;
 
 const defaultPort = 3000;
 
@@ -35,6 +37,45 @@ class Log {
 	}
 
 	inputFile(path) {
+		fs.readFile(path, 'utf-8', (err, wholeLog) => {
+			if (err) {
+				console.log(err);
+				throw new Error(err);
+			}
+
+			wholeLog.split('\n').forEach((line) => this.newEntry(line));
+
+			(new tail(path)).on('line', (line) => this.newEntry(line));
+		});
+	}
+
+	onEntry(callback) {
+		this.entryCallback = callback;
+	}
+
+	newEntry(line) {
+		const parsed = this.selectedParser.parse(line);
+
+		if (!parsed) {
+			//there was a problem parsing the log line
+			console.log('failed to parse line');
+
+			return;
+		}
+
+		this.store(parsed);
+
+		if (this.entryCallback) {
+			this.entryCallback(parsed);
+		}
+	}
+
+	store(entry) {
+		this.entries.push(entry);
+	}
+
+	retrieve(count) {
+		return this.entries.slice(-count);
 	}
 
 	loadParsers() {
@@ -72,18 +113,24 @@ class Server {
 	constructor(port = defaultPort) {
 		const app = express();
 
-		app.use(express.static('public'));
+		app.use(express.static(path.join(__dirname, 'public')));
 
 		this.server = http.Server(app);
 		this.socket = socket(this.server);
 		this.port = port;
 	}
 
-	startServer() {
+	start() {
 		this.socket.on('connection', (client) => {
 			Promise.resolve()
 			.then(() => this.joinCallback && this.joinCallback())
-			.then((name, data) => name && client.emit(name, data));
+			.then((res) => {
+				if (!res) {
+					return;
+				}
+
+				Object.keys(res).forEach((key) => client.emit(key, res[key]));
+			});
 		});
 
 		this.server.listen(this.port);
@@ -99,15 +146,9 @@ class Server {
 	}
 }
 
-const log = new Log();
-const server = new Server();
-//const serverPort = (args.port || args.p || 3000);
-
 //socket.emit('cached', log.slice(-100));
-//const newEntry = logparser.parse(data);
-//file.on('line', (data) => {
-//});
 
+const log = new Log();
 
 if (args.formats || args.l) {
 	log.loadParsers()
@@ -121,31 +162,19 @@ if (args.formats || args.l) {
 		printHelp('you must supply a log file path');
 	}
 
+	const server = new Server(args.port || args.p);
+
 	log.loadParsers().then(() => {
 		log.setParser(args.format || args.f || 'clf');
 
-		console.log(`using log format ${log.parser.name}`);
-
+		console.log(`using log format ${log.selectedParser.name}`);
 		console.log('reading and parsing log file...');
-	});
 
-	fs.readFile(logpath, 'utf-8', (err, data) => {
-		if (err) {
-			console.log(err);
-			throw new Error(err);
-		}
+		log.onEntry((entry) => server.newEntry(entry));
+		server.onJoin(() => ({ cached: log.retrieve(cacheLength) }));
 
-		data.split('\n').forEach((line) => {
-			const newRequest = logparser.parse(line);
-
-			if (newRequest) {
-				log.push(newRequest);
-			}
-		});
-
-		console.log('done');
-
-		file = new tail(logpath);
+		log.inputFile(logpath);
 		server.start();
+
 	});
 }

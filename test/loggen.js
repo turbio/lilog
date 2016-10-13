@@ -1,8 +1,9 @@
 const fs = require('fs');
 
-const build = (props) =>
+const build = (props) => (
 	`${props.ip} - - [${props.date}] "${props.verb} ${props.path} HTTP/1.1" `
-	+ `${props.status} ${props.size}`;
+	+ `${props.status} ${props.size}`
+);
 
 const gen = () => {
 	urlPath = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l'];
@@ -25,7 +26,7 @@ const gen = () => {
 };
 
 const log = (file, cb) => {
-	fs.appendFile(file, gen(), 'utf8', (err) => {
+	fs.appendFile(file, gen() + '\n', 'utf8', (err) => {
 		if (err) {
 			throw new Error(err);
 		}
